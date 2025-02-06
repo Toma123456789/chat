@@ -1,73 +1,52 @@
-/* style.css */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #e5ddd5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+
+    const messageText = messageInput.value.trim();
+
+    if (messageText !== "") {
+        // Kreiraj novu poruku
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', 'sent');
+        messageElement.textContent = messageText;
+
+        // Dodaj poruku u chat box
+        chatBox.appendChild(messageElement);
+
+        // Spremi poruku u localStorage
+        saveMessage(messageText);
+
+        // Pomakni chat na dno
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Očisti input polje
+        messageInput.value = "";
+    }
 }
 
-.chat-container {
-    background-color: #ffffff;
-    border-radius: 10px;
-    width: 400px;
-    height: 600px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+function saveMessage(messageText) {
+    let messages = JSON.parse(localStorage.getItem("messages")) || [];
+    messages.push(messageText);
+    localStorage.setItem("messages", JSON.stringify(messages));
 }
 
-.chat-box {
-    flex-grow: 1;
-    overflow-y: scroll;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+function loadMessages() {
+    const messages = JSON.parse(localStorage.getItem("messages")) || [];
+
+    const chatBox = document.getElementById('chat-box');
+    messages.forEach(messageText => {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        messageElement.textContent = messageText;
+        chatBox.appendChild(messageElement);
+    });
+
+    // Pomakni chat na dno
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-.input-box {
-    display: flex;
-    padding: 10px;
-    background-color: #ffffff;
-    border-top: 1px solid #ddd;
-}
+// Omogućava slanje poruke kad korisnik pritisne Enter
+document.getElementById('message-input').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
 
-input[type="text"] {
-    flex-grow: 1;
-    padding: 10px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
-    margin-right: 10px;
-    font-size: 16px;
-}
-
-button {
-    padding: 10px 15px;
-    border-radius: 20px;
-    border: none;
-    background-color: #007BFF;
-    color: white;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.message {
-    max-width: 80%;
-    padding: 10px;
-    border-radius: 10px;
-    font-size: 16px;
-    background-color: #f1f0f0;
-    align-self: flex-start;
-}
-
-.message.sent {
-    background-color: #dcf8c6;
-    align-self: flex-end;
-}
 
